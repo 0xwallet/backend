@@ -12,7 +12,7 @@ defmodule BackendWeb.Resolvers.Accounts do
   end
 
   def create_user(_parent, args, %{context: %{current_user: %{admin: true}}}) do
-    Blog.Accounts.create_user(args)
+    Backend.Accounts.create_user(args)
   end
 
   def create_user(_parent, args, _resolution) do

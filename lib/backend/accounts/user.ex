@@ -9,6 +9,7 @@ defmodule Backend.Accounts.User do
     field :password_hash, :string
 
     has_many :posts, Content.Post, foreign_key: :author_id
+    has_many :contacts, Accounts.Contact
 
     timestamps()
   end

@@ -7,6 +7,7 @@ defmodule Backend.Accounts.User do
   schema "users" do
     field :name, :string
     field :password_hash, :string
+    field :token, :string
 
     has_many :posts, Content.Post, foreign_key: :author_id
     has_many :contacts, Accounts.Contact

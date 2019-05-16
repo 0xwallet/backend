@@ -1,12 +1,12 @@
 defmodule BackendWeb.Router do
   use BackendWeb, :router
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  pipeline :graphql do
+    plug BackendWeb.Context
   end
 
   scope "/api" do
-    pipe_through :api
+    pipe_through :graphql
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: BackendWeb.Schema

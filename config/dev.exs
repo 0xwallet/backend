@@ -62,4 +62,10 @@ config :backend, Backend.Repo,
   hostname: "localhost",
   pool_size: 10
 
-import_config "dev.secret.exs"
+
+api_key =
+  System.get_env("SEND_GRID_API_KEY") || "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"
+
+config :backend, Backend.EmailService.SendGrid,
+  adapter: Bamboo.SendGridAdapter,
+  api_key: api_key

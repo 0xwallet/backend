@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :demo, DemoWeb.Endpoint,
+config :backend, BackendWeb.Endpoint,
   load_from_system_env: true,
   url: [host: "161.117.83.227", port: 80]
 

@@ -9,7 +9,8 @@ config :logger, level: :warn
 
 # Configure your database
 config :backend, Backend.Repo,
-  pool_size: 10
+  pool_size: 10,
+  database: "backend_prod"
 
   api_key =
   System.get_env("SEND_GRID_API_KEY") || "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"

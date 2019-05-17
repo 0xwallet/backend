@@ -25,7 +25,7 @@ defmodule BackendWeb.Context do
     end
   end
 
-  defp authorization(token) do
+  defp authorize(token) do
     User
     |> where(token: ^token)
     |> Repo.one()

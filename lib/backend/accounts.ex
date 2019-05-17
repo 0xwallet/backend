@@ -30,4 +30,8 @@ defmodule Backend.Accounts do
     |> Backend.Repo.insert()
   end
 
+  def get_code(email) do
+
+  end
+
 end

@@ -19,4 +19,23 @@ defmodule BackendWeb.Resolvers.Accounts do
     {:error, "Access denied"}
   end
 
+  def get_code(_parent, %{email: email}, _resolution) do
+    if email_valid?(email) do
+      case Backend.Accounts.get_code(email) do
+        :ok ->
+          {:ok, "Sent authentication code."}
+        :error ->
+          {:error, "Please wait."}
+      end
+    else
+      {:error, "Invalid email."}
+    end
+  end
+
+
+  ## Helpers
+
+  defp email_valid?(email) do
+    Regex.match?(~r/^[A-Za-z0-9\._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/, email)
+  end
 end

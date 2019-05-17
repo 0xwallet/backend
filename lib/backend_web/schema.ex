@@ -20,6 +20,12 @@ defmodule BackendWeb.Schema do
       arg :id, non_null(:id)
       resolve &Resolvers.Accounts.find_user/3
     end
+
+    @desc "Get authentication code"
+    field :code, :string do
+      arg :email, non_null(:string)
+      resolve &Resolvers.Accounts.get_code/3
+    end
   end
 
   mutation do
@@ -33,13 +39,12 @@ defmodule BackendWeb.Schema do
       resolve &Resolvers.Content.create_post/3
     end
 
-    @desc "Create a user"
-    field :create_user, :user do
-      arg :name, non_null(:string)
-      arg :contact, non_null(:contact_input)
-      arg :password, non_null(:string)
+    @desc "Authenticate a user"
+    field :authenticate_user, :user do
+      arg :email, non_null(:string)
+      arg :code, non_null(:string)
 
-      resolve &Resolvers.Accounts.create_user/3
+      resolve &Resolvers.Accounts.authenticate_user/3
     end
   end
 

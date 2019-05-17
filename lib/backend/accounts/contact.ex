@@ -7,6 +7,7 @@ defmodule Backend.Accounts.Contact do
   schema "contacts" do
     field :type, :string
     field :value, :string
+    field :code, :string
 
     belongs_to :user, Accounts.User
 
@@ -20,7 +21,7 @@ defmodule Backend.Accounts.Contact do
 
   def changeset(%Accounts.Contact{} = contact, attrs) do
     contact
-    |> cast(attrs, [:type, :value])
+    |> cast(attrs, [:type, :value, :code])
     |> validate_required([:type, :value])
   end
 end

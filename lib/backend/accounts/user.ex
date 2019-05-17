@@ -25,7 +25,7 @@ defmodule Backend.Accounts.User do
       attrs
       |> Map.put(:password_hash, Argon2.hash_pwd_salt(attrs.password))
     user
-    |> cast(attrs, [:name, :password_hash, :token, :code])
+    |> cast(attrs, [:name, :password_hash, :token])
     |> validate_required([:name, :password_hash])
   end
 end

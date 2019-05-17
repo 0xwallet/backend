@@ -12,8 +12,8 @@ config :backend, Backend.Repo,
   pool_size: 10
 
   api_key =
-  System.get_env("SEND_GRID_API_KEY") || raise("SEND_GRID_API_KEY didn't set!")
+  System.get_env("SEND_GRID_API_KEY") || "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"
 
-config :backend, Demo.Mailer.SendGrid,
+config :backend, Backend.EmailService.SendGrid,
   adapter: Bamboo.SendGridAdapter,
   api_key: api_key

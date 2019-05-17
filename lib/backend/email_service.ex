@@ -1,5 +1,6 @@
 defmodule Backend.EmailService do
   import Bamboo.Email
+  alias Backend.EmailService
 
   @from_addr "auth@owaf.io"
 
@@ -9,6 +10,7 @@ defmodule Backend.EmailService do
     |> from(@from_addr)
     |> subject("[owaf.io] verification code:")
     |> html_body(body(code))
+    |> EmailService.SendGrid.deliver_later()
   end
 
   defp body(code) do

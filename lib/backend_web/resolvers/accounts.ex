@@ -22,7 +22,7 @@ defmodule BackendWeb.Resolvers.Accounts do
   def get_code(_parent, %{email: email}, _resolution) do
     if email_valid?(email) do
       case Backend.Accounts.get_code(email) do
-        :ok ->
+        {:ok, _} ->
           {:ok, "Sent authentication code."}
         :error ->
           {:error, "Please wait."}

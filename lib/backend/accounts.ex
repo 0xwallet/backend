@@ -1,4 +1,5 @@
 defmodule Backend.Accounts do
+  import Ecto.Query
 
   alias Backend.{Accounts, Repo}
 
@@ -20,18 +21,79 @@ defmodule Backend.Accounts do
   def create_contact(attrs) do
     attrs
     |> Accounts.Contact.changeset()
-    |> Backend.Repo.insert()
+    |> Repo.insert()
   end
 
   def do_create_user(attrs, contact) do
     attrs
     |> Map.put(:contact_id, contact.id)
     |> Accounts.User.changeset()
-    |> Backend.Repo.insert()
+    |> Repo.insert()
   end
 
   def get_code(email) do
+    from(c in Accounts.Contact,
+      where: c.type == "email",
+      where: c.value == ^email)
+    |> Repo.one()
+    |> do_get_code(email)
+  end
 
+  def do_get_code(nil, email) do
+    {time, code} = auth_code_with_time()
+    send_auth_email(email, code)
+
+    %{
+      type: "email",
+      value: email,
+      code: time <> " " <> code
+    }
+    |> Accounts.Contact.changeset()
+    |> Repo.insert()
+  end
+
+  def do_get_code(%Accounts.Contact{} = contact, email) do
+    {time, _code} = parse_code(contact.code)
+
+    if expired?(time) do
+      {time, code} = auth_code_with_time()
+      send_auth_email(email, code)
+
+      Accounts.Contact.changeset(contact, %{code: time <> " " <> code})
+      |> Repo.update()
+    else
+      :error
+    end
+  end
+
+
+
+  ## Helpers
+
+  defp expired?(time) do
+    :os.system_time(:second) - time > 60
+  end
+
+  defp auth_code_with_time do
+    code =
+      :crypto.strong_rand_bytes(10)
+      |> Base.encode32()
+      |> String.slice(0, 6)
+    time =
+      :os.system_time(:second)
+      |> to_string()
+    {time, code}
+  end
+
+  defp parse_code(str) do
+    [time, code] = String.split(str)
+    {String.to_integer(time), code}
+  end
+
+  defp send_auth_email(email, code) do
+    spawn(fn ->
+      Backend.EmailService.auth_email(email, code)
+    end)
   end
 
 end

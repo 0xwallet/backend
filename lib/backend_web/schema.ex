@@ -21,10 +21,10 @@ defmodule BackendWeb.Schema do
       resolve &Resolvers.Accounts.find_user/3
     end
 
-    @desc "Get authentication code"
+    @desc "Send authentication code"
     field :code, :string do
       arg :email, non_null(:string)
-      resolve &Resolvers.Accounts.get_code/3
+      resolve &Resolvers.Accounts.send_code/3
     end
   end
 
@@ -39,12 +39,12 @@ defmodule BackendWeb.Schema do
       resolve &Resolvers.Content.create_post/3
     end
 
-    @desc "Authenticate a user"
-    field :authenticate_user, :user do
+    @desc "Get authorization token"
+    field :authorization_token, :string do
       arg :email, non_null(:string)
       arg :code, non_null(:string)
 
-      resolve &Resolvers.Accounts.authenticate_user/3
+      resolve &Resolvers.Accounts.authorization_token/3
     end
   end
 

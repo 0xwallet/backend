@@ -18,10 +18,34 @@ defmodule Backend.Accounts do
     end
   end
 
+  def authorization_token(email, code) do
+    case find_contact(email) do
+      nil ->
+        :error
+      %{code: ^code} = contact ->
+        if expired?(code) do
+          :error
+        else
+          token = gen_token()
+          Accounts.Contact.changeset(contact, %{token: token})
+          |> Repo.update()
+        end
+      _ ->
+        :error
+    end
+  end
+
   def create_contact(attrs) do
     attrs
     |> Accounts.Contact.changeset()
     |> Repo.insert()
+  end
+
+  def find_contact(email) do
+    from(c in Accounts.Contact,
+      where: c.type == "email",
+      where: c.value == ^email)
+    |> Repo.one()
   end
 
   def do_create_user(attrs, contact) do
@@ -31,15 +55,12 @@ defmodule Backend.Accounts do
     |> Repo.insert()
   end
 
-  def get_code(email) do
-    from(c in Accounts.Contact,
-      where: c.type == "email",
-      where: c.value == ^email)
-    |> Repo.one()
-    |> do_get_code(email)
+  def send_code(email) do
+    find_contact(email)
+    |> do_send_code(email)
   end
 
-  def do_get_code(nil, email) do
+  def do_send_code(nil, email) do
     {time, code} = auth_code_with_time()
     send_auth_email(email, code)
 
@@ -52,7 +73,7 @@ defmodule Backend.Accounts do
     |> Repo.insert()
   end
 
-  def do_get_code(%Accounts.Contact{} = contact, email) do
+  def do_send_code(%Accounts.Contact{} = contact, email) do
     {time, _code} = parse_code(contact.code)
 
     if expired?(time) do
@@ -70,8 +91,14 @@ defmodule Backend.Accounts do
 
   ## Helpers
 
+  @expire_second 300
+
   defp expired?(time) do
-    :os.system_time(:second) - time > 60
+    :os.system_time(:second) - time > @expire_second
+  end
+
+  defp gen_token do
+    :crypto.strong_rand_bytes(32) |> Base.encode16()
   end
 
   defp auth_code_with_time do

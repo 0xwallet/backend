@@ -7,7 +7,7 @@ defmodule Backend.Accounts.User do
   schema "users" do
     field :name, :string
     # field :password_hash, :string
-    field :token, :string
+    # field :token, :string
 
     has_many :posts, Content.Post, foreign_key: :author_id
     has_many :contacts, Accounts.Contact
@@ -25,7 +25,7 @@ defmodule Backend.Accounts.User do
     #   attrs
     #   |> Map.put(:password_hash, Argon2.hash_pwd_salt(attrs.password))
     user
-    |> cast(attrs, [:name, :token])
+    |> cast(attrs, [:name])
     |> validate_required([:name])
   end
 end

@@ -8,6 +8,7 @@ defmodule Backend.Accounts.Contact do
     field :type, :string
     field :value, :string
     field :code, :string
+    field :token, :string
 
     belongs_to :user, Accounts.User
 
@@ -21,7 +22,7 @@ defmodule Backend.Accounts.Contact do
 
   def changeset(%Accounts.Contact{} = contact, attrs) do
     contact
-    |> cast(attrs, [:type, :value, :code])
+    |> cast(attrs, [:type, :value, :code, :token])
     |> validate_required([:type, :value])
   end
 end

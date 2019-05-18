@@ -15,17 +15,30 @@ defmodule BackendWeb.Resolvers.Accounts do
     Backend.Accounts.create_user(args)
   end
 
-  def create_user(_parent, args, _resolution) do
+  def create_user(_parent, _args, _resolution) do
     {:error, "Access denied"}
   end
 
-  def get_code(_parent, %{email: email}, _resolution) do
+  def send_code(_parent, %{email: email}, _resolution) do
     if email_valid?(email) do
-      case Backend.Accounts.get_code(email) do
+      case Backend.Accounts.send_code(email) do
         {:ok, _} ->
           {:ok, "Sent authentication code."}
         :error ->
           {:error, "Please wait."}
+      end
+    else
+      {:error, "Invalid email."}
+    end
+  end
+
+  def authorization_token(_parent, %{email: email, code: code}, _resolution) do
+    if email_valid?(email) do
+      case Backend.Accounts.authorization_token(email, code) do
+        {:ok, contact} ->
+          {:ok, contact.token}
+        :error ->
+          {:error, "Incorrect email or code."}
       end
     else
       {:error, "Invalid email."}

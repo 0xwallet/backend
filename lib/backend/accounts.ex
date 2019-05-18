@@ -22,16 +22,19 @@ defmodule Backend.Accounts do
     case find_contact(email) do
       nil ->
         :error
-      %{code: ^code} = contact ->
-        if expired?(code) do
+      contact ->
+        {time, auth_code} = parse_code(contact.code)
+        if expired?(time) do
           :error
         else
-          token = gen_token()
-          Accounts.Contact.changeset(contact, %{token: token})
-          |> Repo.update()
+          if auth_code == code do
+            token = gen_token()
+            Accounts.Contact.changeset(contact, %{token: token})
+            |> Repo.update()
+          else
+            :error
+          end
         end
-      _ ->
-        :error
     end
   end
 

@@ -11,6 +11,10 @@ defmodule BackendWeb.Resolvers.Accounts do
   #   end
   # end
 
+  def find_user(_parent, _args, %{context: %{current_user: user}}) do
+    {:ok, user}
+  end
+
   # def create_user(_parent, args, %{context: %{current_user: %{admin: true}}}) do
   #   Backend.Accounts.create_user(args)
   # end

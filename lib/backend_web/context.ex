@@ -4,7 +4,7 @@ defmodule BackendWeb.Context do
   import Plug.Conn
   import Ecto.Query, only: [where: 2]
 
-  alias Backend.{Repo, User}
+  alias Backend.{Repo, Accounts}
 
   def init(opts), do: opts
 
@@ -26,7 +26,7 @@ defmodule BackendWeb.Context do
   end
 
   defp authorize(token) do
-    User
+    Accounts.User
     |> where(token: ^token)
     |> Repo.one()
     |> case do

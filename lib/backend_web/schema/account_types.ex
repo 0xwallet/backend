@@ -3,24 +3,20 @@ defmodule BackendWeb.Schema.AccountTypes do
 
   alias BackendWeb.Resolvers
 
-  # @desc "A user of the blog"
-  # object :user do
-  #   field :id, :id
-  #   field :name, :string
-  #   field :email, :string
-  #   field :posts, list_of(:post) do
-  #     arg :date, :date
-  #     resolve &Resolvers.Content.list_posts/3
-  #   end
+  @desc "A user"
+  object :user do
+    field :id, :id
+    field :type, :string
+    field :value, :string
+  end
+
+  # enum :contact_type do
+  #   value :phone, as: "phone"
+  #   value :email, as: "email"
   # end
 
-  enum :contact_type do
-    value :phone, as: "phone"
-    value :email, as: "email"
-  end
-
-  input_object :contact_input do
-    field :type, non_null(:contact_type)
-    field :value, non_null(:string)
-  end
+  # input_object :contact_input do
+  #   field :type, non_null(:contact_type)
+  #   field :value, non_null(:string)
+  # end
 end

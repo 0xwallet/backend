@@ -19,7 +19,7 @@ defmodule Backend.Accounts do
   # end
 
   def authorization_token(email, code) do
-    case find_contact(email) do
+    case find_user(email) do
       nil ->
         :error
       contact ->
@@ -29,7 +29,7 @@ defmodule Backend.Accounts do
         else
           if auth_code == code do
             token = gen_token()
-            Accounts.Contact.changeset(contact, %{token: token})
+            Accounts.User.changeset(contact, %{token: token})
             |> Repo.update()
           else
             :error
@@ -40,12 +40,12 @@ defmodule Backend.Accounts do
 
   def create_contact(attrs) do
     attrs
-    |> Accounts.Contact.changeset()
+    |> Accounts.User.changeset()
     |> Repo.insert()
   end
 
-  def find_contact(email) do
-    from(c in Accounts.Contact,
+  def find_user(email) do
+    from(c in Accounts.User,
       where: c.type == "email",
       where: c.value == ^email)
     |> Repo.one()
@@ -59,7 +59,7 @@ defmodule Backend.Accounts do
   # end
 
   def send_code(email) do
-    find_contact(email)
+    find_user(email)
     |> do_send_code(email)
   end
 
@@ -72,18 +72,18 @@ defmodule Backend.Accounts do
       value: email,
       code: time <> " " <> code
     }
-    |> Accounts.Contact.changeset()
+    |> Accounts.User.changeset()
     |> Repo.insert()
   end
 
-  def do_send_code(%Accounts.Contact{} = contact, email) do
+  def do_send_code(%Accounts.User{} = contact, email) do
     {time, _code} = parse_code(contact.code)
 
     if expired?(time) do
       {time, code} = auth_code_with_time()
       send_auth_email(email, code)
 
-      Accounts.Contact.changeset(contact, %{code: time <> " " <> code})
+      Accounts.User.changeset(contact, %{code: time <> " " <> code})
       |> Repo.update()
     else
       :error

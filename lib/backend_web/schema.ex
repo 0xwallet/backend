@@ -15,11 +15,11 @@ defmodule BackendWeb.Schema do
     #   resolve &Resolvers.Content.list_posts/3
     # end
 
-    # @desc "Get a user of the blog"
-    # field :user, :user do
-    #   arg :id, non_null(:id)
-    #   resolve &Resolvers.Accounts.find_user/3
-    # end
+    @desc "Get a user's info"
+    field :user, :user do
+      arg :id, :id
+      resolve &Resolvers.Accounts.find_user/3
+    end
 
     @desc "Send authentication code"
     field :code, :string do

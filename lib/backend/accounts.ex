@@ -3,20 +3,20 @@ defmodule Backend.Accounts do
 
   alias Backend.{Accounts, Repo}
 
-  def find_user(id) do
-    Repo.get(Accounts.User, id)
-  end
+  # def find_user(id) do
+  #   Repo.get(Accounts.User, id)
+  # end
 
-  def create_user(attrs) do
-    {contact_attrs, user_attrs} = Map.pop(attrs, :contact)
+  # def create_user(attrs) do
+  #   {contact_attrs, user_attrs} = Map.pop(attrs, :contact)
 
-    Repo.transaction fn ->
-      with {:ok, contact} <- create_contact(contact_attrs),
-           {:ok, user} <- do_create_user(user_attrs, contact) do
-        %{user | contacts: [contact]}
-      end
-    end
-  end
+  #   Repo.transaction fn ->
+  #     with {:ok, contact} <- create_contact(contact_attrs),
+  #          {:ok, user} <- do_create_user(user_attrs, contact) do
+  #       %{user | contacts: [contact]}
+  #     end
+  #   end
+  # end
 
   def authorization_token(email, code) do
     case find_contact(email) do
@@ -51,12 +51,12 @@ defmodule Backend.Accounts do
     |> Repo.one()
   end
 
-  def do_create_user(attrs, contact) do
-    attrs
-    |> Map.put(:contact_id, contact.id)
-    |> Accounts.User.changeset()
-    |> Repo.insert()
-  end
+  # def do_create_user(attrs, contact) do
+  #   attrs
+  #   |> Map.put(:contact_id, contact.id)
+  #   |> Accounts.User.changeset()
+  #   |> Repo.insert()
+  # end
 
   def send_code(email) do
     find_contact(email)

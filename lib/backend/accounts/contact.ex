@@ -10,7 +10,7 @@ defmodule Backend.Accounts.Contact do
     field :code, :string
     field :token, :string
 
-    belongs_to :user, Accounts.User
+    # belongs_to :user, Accounts.User
 
     timestamps()
   end

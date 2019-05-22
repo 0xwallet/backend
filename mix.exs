@@ -44,7 +44,8 @@ defmodule Backend.MixProject do
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4"},
       {:argon2_elixir, "~> 2.0"},
-      {:bamboo, "~> 1.2"}
+      {:bamboo, "~> 1.2"},
+      {:cbor, "~> 0.1.7"}
     ]
   end
 
